@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    public PlayerHealth playerHealth;
+
     [Header("Movement")]
     public float moveSpeed;
     public Transform orientation;
@@ -28,6 +30,8 @@ public class PlayerMovement : MonoBehaviour
 
     private void Update()
     {
+        if (playerHealth != null && playerHealth.isDead) return;
+
         grounded = Physics.Raycast(transform.position, Vector3.down, playerHeight * 0.5f + 0.2f, groundLayer);
         MyInput();
 

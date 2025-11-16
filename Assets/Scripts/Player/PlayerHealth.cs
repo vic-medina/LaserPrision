@@ -8,6 +8,10 @@ public class PlayerHealth : MonoBehaviour
     public int currentHealth;
     public float damageCooldown;
     [SerializeField] bool canTakeDamage = true;
+    public delegate void PlayerDeathEvent();
+    public event PlayerDeathEvent OnPlayerDeath;
+    public bool isDead = false;
+
 
     void Start()
     {
@@ -35,9 +39,15 @@ public class PlayerHealth : MonoBehaviour
 
     private void Die()
     {
-        Debug.Log("Jugador ha muerto!");
+        if (isDead) return; 
+        isDead = true;
 
+        Debug.Log("Jugador ha muerto!");
+        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.None;
+        OnPlayerDeath?.Invoke();
     }
+
 
     private void OnTriggerEnter(Collider collision)
     {
