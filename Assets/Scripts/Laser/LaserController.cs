@@ -19,7 +19,7 @@ public class Laser : MonoBehaviour
 
     private void OnDisable()
     {
-        CancelInvoke(); // Evita invocaciones pendientes
+        CancelInvoke();
     }
 
     private void ReturnSelf()

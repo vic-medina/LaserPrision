@@ -3,21 +3,24 @@ using UnityEngine;
 
 public class PlayerHealth : MonoBehaviour
 {
+    [Header("References")]
+    [SerializeField] private Renderer playerRenderer;
+    
     [Header("Health Settings")]
-    public int maxHealth = 3;
+    [SerializeField] private int maxHealth = 3;
     public int currentHealth;
-    public float damageCooldown;
-    [SerializeField] bool canTakeDamage = true;
-    public delegate void PlayerDeathEvent();
-    public event PlayerDeathEvent OnPlayerDeath;
+    [SerializeField] private float damageCooldown;
+    [SerializeField] private bool canTakeDamage = true;
     public bool isDead = false;
 
-    [SerializeField] private Renderer playerRenderer;
+    [Header("Damage Feedback")]
     [SerializeField] private Color damageColor = Color.red;
     [SerializeField] private float flashDuration;
     [SerializeField] private int flashCount;
-
     [SerializeField] private Color originalColor;
+
+    public delegate void PlayerDeathEvent(); // Define el evento de muerte del jugador
+    public event PlayerDeathEvent OnPlayerDeath;
 
     void Start()
     {
@@ -25,7 +28,7 @@ public class PlayerHealth : MonoBehaviour
         flashCount = Mathf.FloorToInt(damageCooldown / (flashDuration * 2));
     }
 
-    public void TakeDamage(int amount)
+    public void TakeDamage(int amount) // Maneja el daño recibido por el jugador
     {
         currentHealth -= amount;
         canTakeDamage = false;
@@ -40,13 +43,13 @@ public class PlayerHealth : MonoBehaviour
         StartCoroutine(DamageCooldown());
     }
 
-    private IEnumerator DamageCooldown()
+    private IEnumerator DamageCooldown() // Controla el tiempo de invulnerabilidad después de recibir daño
     {
         yield return new WaitForSeconds(damageCooldown);
         canTakeDamage = true;
     }
 
-    private void Die()
+    private void Die() // Maneja la muerte del jugador
     {
         if (isDead) return; 
         isDead = true;
@@ -56,7 +59,7 @@ public class PlayerHealth : MonoBehaviour
         OnPlayerDeath?.Invoke();
     }
 
-    private IEnumerator FlashDamage()
+    private IEnumerator FlashDamage() // Efecto visual de parpadeo al recibir daño
     {
         for (int i = 0; i < flashCount; i++)
         {
@@ -67,7 +70,7 @@ public class PlayerHealth : MonoBehaviour
         }
     }
 
-    private void OnTriggerEnter(Collider collision)
+    private void OnTriggerEnter(Collider collision) // Detecta colisiones con láseres enemigos
     {
         if (canTakeDamage & collision.CompareTag("Laser"))
         {

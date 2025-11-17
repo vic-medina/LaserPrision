@@ -2,27 +2,25 @@ using UnityEngine;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [Header("References")]
     public PlayerHealth playerHealth;
     [SerializeField] private Animator animator;
+    [SerializeField] private Rigidbody rb;
 
     [Header("Movement")]
     public float moveSpeed;
     public Transform orientation;
     
-
     [Header("Ground Check")]
     public float playerHeight;
     public LayerMask groundLayer;
     public float groundDrag;
     public bool grounded;
 
-
     float horizontalInput;
     float verticalInput;
-
     Vector3 moveDirection;
-    Rigidbody rb;
-
+    
     void Start()
     {
         rb = GetComponent<Rigidbody>();
@@ -54,13 +52,13 @@ public class PlayerMovement : MonoBehaviour
         MovePlayer();
     }
 
-    private void MyInput()
+    private void MyInput() // Captura la entrada del jugador
     {
         horizontalInput = Input.GetAxisRaw("Horizontal");
         verticalInput = Input.GetAxisRaw("Vertical");
     }
 
-    private void MovePlayer()
+    private void MovePlayer() // Mueve al jugador
     {
         moveDirection = orientation.forward * verticalInput + orientation.right * horizontalInput;
         rb.AddForce(moveDirection.normalized * moveSpeed * 10f, ForceMode.Force);
@@ -71,7 +69,7 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
         }
     }
-    private void UpdateAnimation()
+    private void UpdateAnimation() // Actualiza las animaciones del jugador
     {
         if (animator == null) return;
 
@@ -79,7 +77,7 @@ public class PlayerMovement : MonoBehaviour
         animator.SetFloat("Speed", speed);
     }
 
-    private void OnPlayerDeath()
+    private void OnPlayerDeath() // Maneja la muerte del jugador
     {
         rb.linearVelocity = Vector3.zero;
         rb.angularVelocity = Vector3.zero;
@@ -90,5 +88,4 @@ public class PlayerMovement : MonoBehaviour
             animator.SetTrigger("Death");     // si tienes animación de muerte
         }
     }
-
 }

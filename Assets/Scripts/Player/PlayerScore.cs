@@ -3,19 +3,22 @@ using UnityEngine;
 
 public class PlayerScore : MonoBehaviour
 {
-    public PlayerHealth playerHealth;
+    [Header("References")]
     [SerializeField] private TextMeshProUGUI scoreTxt;
     [SerializeField] private TextMeshProUGUI finalScoreTxt;
     [SerializeField] private TextMeshProUGUI multTxt;
-    private float timeAlive = 0f;
-    public int score = 0;
-    public int pointPerSecond = 1;
+    public PlayerHealth playerHealth;
+
+    [Header("Score settings")]
+    [SerializeField] private int score = 0;
+    [SerializeField] private int pointPerSecond = 1;
     [SerializeField] private int multiplier = 1;
+    [SerializeField] private float timeAlive = 0f;
 
     private float timer = 0f;
+
     private void Start()
     {
-
         playerHealth.OnPlayerDeath += StopScore;
     }
 
@@ -23,10 +26,8 @@ public class PlayerScore : MonoBehaviour
     {
         if (playerHealth != null && playerHealth.isDead) return;
 
-        // acumula tiempo vivo
         timeAlive += Time.deltaTime;
 
-        // actualiza multiplicador según tiempoAlive
         if (timeAlive < 15f)
             multiplier = 1;
         else if (timeAlive < 40f)
@@ -45,13 +46,13 @@ public class PlayerScore : MonoBehaviour
         }
     }
 
-    void UpdateUI(int score, int multiplier)
+    void UpdateUI(int score, int multiplier) // Actualiza la UI del puntaje
     {
         scoreTxt.text = ""+score;
         multTxt.text = "x"+multiplier;
     }
 
-    void StopScore()
+    void StopScore() // Detiene el puntaje al morir
     {
         timer = 0f;
         finalScoreTxt.text = "Score: "+score;

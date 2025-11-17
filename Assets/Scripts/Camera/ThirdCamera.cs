@@ -10,9 +10,9 @@ public class ThirdCamera : MonoBehaviour
 
     private float rotationSpeed;
 
-
     void Start()
     {
+        //Desaparecer el cursor
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
@@ -20,11 +20,11 @@ public class ThirdCamera : MonoBehaviour
 
     void Update()
     {
-        //rotacion de la direccion del jugador
+        //Rotacion de la direccion del jugador
         Vector3 viewDir = player.position - new Vector3(transform.position.x, player.position.y, transform.position.z);
         orientation.forward = viewDir.normalized;
 
-        //rotacion del jugador
+        //Rotacion del jugador
         float horizontalInput = Input.GetAxis("Horizontal");
         float verticalInput = Input.GetAxis("Vertical");
         Vector3 inputDir = orientation.forward * verticalInput + orientation.right * horizontalInput;
