@@ -6,10 +6,11 @@ public class PlayerScore : MonoBehaviour
     public PlayerHealth playerHealth;
     [SerializeField] private TextMeshProUGUI scoreTxt;
     [SerializeField] private TextMeshProUGUI finalScoreTxt;
-
+    [SerializeField] private TextMeshProUGUI multTxt;
+    private float timeAlive = 0f;
     public int score = 0;
     public int pointPerSecond = 1;
-    private int multiplier = 1;
+    [SerializeField] private int multiplier = 1;
 
     private float timer = 0f;
     private void Start()
@@ -17,12 +18,15 @@ public class PlayerScore : MonoBehaviour
 
         playerHealth.OnPlayerDeath += StopScore;
     }
+
     void Update()
     {
         if (playerHealth != null && playerHealth.isDead) return;
 
-        float timeAlive = Time.time;
+        // acumula tiempo vivo
+        timeAlive += Time.deltaTime;
 
+        // actualiza multiplicador según tiempoAlive
         if (timeAlive < 15f)
             multiplier = 1;
         else if (timeAlive < 40f)
@@ -37,20 +41,20 @@ public class PlayerScore : MonoBehaviour
         {
             score += pointPerSecond * multiplier;
             timer = 0f;
-            UpdateScore(score);
+            UpdateUI(score, multiplier);
         }
     }
 
-    void UpdateScore(int score)
+    void UpdateUI(int score, int multiplier)
     {
-        if (scoreTxt != null)
-            scoreTxt.text = ""+score;
+        scoreTxt.text = ""+score;
+        multTxt.text = "x"+multiplier;
     }
 
     void StopScore()
     {
         timer = 0f;
-        finalScoreTxt.text = ""+score;
+        finalScoreTxt.text = "Score: "+score;
     }
 }
 

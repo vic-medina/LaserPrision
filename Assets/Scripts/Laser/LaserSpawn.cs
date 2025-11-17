@@ -32,7 +32,12 @@ public class LaserSpawner : MonoBehaviour
     }
     private void Update()
     {
-        if (playerHealth != null && playerHealth.isDead) return;
+        if (playerHealth != null && playerHealth.isDead)
+        {
+            StopAllCoroutines();
+            return;
+        }
+            
 
         timer += Time.deltaTime;
 
@@ -57,6 +62,7 @@ public class LaserSpawner : MonoBehaviour
 
         // Instancia el láser
         GameObject laser = laserPool.GetFromPool(spawnPos,rotation);
+
     }
 
     void SpawnLasertoPlayer(Vector3 playerPos)
@@ -79,8 +85,8 @@ public class LaserSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(reduceTimer); // Cada 10 segundos
-            spawnInterval = Mathf.Max(0.5f, spawnInterval - increaseRate); // Reduce el intervalo, pero no menos de 0.5 segundos
+            yield return new WaitForSeconds(reduceTimer); 
+            spawnInterval = Mathf.Max(0.5f, spawnInterval - increaseRate);
         }
     }
 
@@ -94,7 +100,6 @@ public class LaserSpawner : MonoBehaviour
             {
                 Vector3 playerPos = player.transform.position;
                 SpawnLasertoPlayer(playerPos);
-                Debug.Log("Laser spawned near player at: " + playerPos);
             }
         }
     }

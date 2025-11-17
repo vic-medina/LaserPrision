@@ -12,16 +12,25 @@ public class PlayerHealth : MonoBehaviour
     public event PlayerDeathEvent OnPlayerDeath;
     public bool isDead = false;
 
+    [SerializeField] private Renderer playerRenderer;
+    [SerializeField] private Color damageColor = Color.red;
+    [SerializeField] private float flashDuration;
+    [SerializeField] private int flashCount;
+
+    [SerializeField] private Color originalColor;
 
     void Start()
     {
-        currentHealth = maxHealth;  // Inicia con todas las vidas
+        currentHealth = maxHealth;
+        flashCount = Mathf.FloorToInt(damageCooldown / (flashDuration * 2));
     }
 
     public void TakeDamage(int amount)
     {
         currentHealth -= amount;
         canTakeDamage = false;
+
+        StartCoroutine(FlashDamage());
 
         if (currentHealth <= 0)
         {
@@ -42,12 +51,21 @@ public class PlayerHealth : MonoBehaviour
         if (isDead) return; 
         isDead = true;
 
-        Debug.Log("Jugador ha muerto!");
         Cursor.visible = true;
         Cursor.lockState = CursorLockMode.None;
         OnPlayerDeath?.Invoke();
     }
 
+    private IEnumerator FlashDamage()
+    {
+        for (int i = 0; i < flashCount; i++)
+        {
+            playerRenderer.material.color = damageColor;
+            yield return new WaitForSeconds(flashDuration);
+            playerRenderer.material.color = originalColor;
+            yield return new WaitForSeconds(flashDuration);
+        }
+    }
 
     private void OnTriggerEnter(Collider collision)
     {

@@ -3,6 +3,7 @@ using UnityEngine;
 public class Laser : MonoBehaviour
 {
     [SerializeField] private LaserPool pool;
+    [SerializeField] private AudioSource audioS;
 
     public void SetPool(LaserPool laserPool)
     {
@@ -13,6 +14,7 @@ public class Laser : MonoBehaviour
     {
         // Regresar al pool después de 3 segundos
         Invoke(nameof(ReturnSelf), 3f);
+        audioS.Play();
     }
 
     private void OnDisable()
