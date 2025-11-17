@@ -9,15 +9,18 @@ public class PlayerUI : MonoBehaviour
     public Image[] hearts;              // Array de imágenes de corazones
     public GameObject scorePanel;
     public GameObject gameOverPanel;    // Panel de Game Over
+    public GameObject tutorialPanel;
 
     private void Start()
     {
+        tutorialPanel.SetActive(true);
         gameOverPanel.SetActive(false);
         playerHealth.OnPlayerDeath += ShowGameOver;
     }
 
     void Update()
     {
+        CheckInput();
         UpdateHearts();
     }
 
@@ -41,5 +44,13 @@ public class PlayerUI : MonoBehaviour
     public void Restart()
     {
         SceneManager.LoadScene(0);
+    }
+
+    private void CheckInput()
+    {
+        if (tutorialPanel.activeSelf && Input.anyKeyDown)
+        {
+            tutorialPanel.SetActive(false);
+        }
     }
 }

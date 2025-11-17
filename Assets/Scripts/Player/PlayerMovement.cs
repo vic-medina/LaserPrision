@@ -3,6 +3,7 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public PlayerHealth playerHealth;
+    [SerializeField] private Animator animator;
 
     [Header("Movement")]
     public float moveSpeed;
@@ -26,7 +27,11 @@ public class PlayerMovement : MonoBehaviour
     {
         rb = GetComponent<Rigidbody>();
         rb.freezeRotation = true;
+
+        if (playerHealth != null)
+            playerHealth.OnPlayerDeath += OnPlayerDeath;
     }
+
 
     private void Update()
     {
@@ -39,10 +44,13 @@ public class PlayerMovement : MonoBehaviour
             rb.linearDamping = groundDrag;
         else
             rb.linearDamping = 0;
+
+        UpdateAnimation();
     }
 
     private void FixedUpdate()
     {
+        if (playerHealth != null && playerHealth.isDead) return;
         MovePlayer();
     }
 
@@ -63,4 +71,24 @@ public class PlayerMovement : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f);
         }
     }
+    private void UpdateAnimation()
+    {
+        if (animator == null) return;
+
+        float speed = new Vector3(rb.linearVelocity.x, 0f, rb.linearVelocity.z).magnitude;
+        animator.SetFloat("Speed", speed);
+    }
+
+    private void OnPlayerDeath()
+    {
+        rb.linearVelocity = Vector3.zero;
+        rb.angularVelocity = Vector3.zero;
+
+        if (animator != null)
+        {
+            animator.SetFloat("Speed", 0f);   // fuerza Idle
+            animator.SetTrigger("Death");     // si tienes animación de muerte
+        }
+    }
+
 }
